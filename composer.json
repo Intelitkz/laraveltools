@@ -1,5 +1,5 @@
 {
-    "name": "intelit/laraveltools",
+    "name": "intelitkz/laraveltools",
     "description": "Laravel tools by Intelit",
     "require": {
         "php": ">=5.4.0"
