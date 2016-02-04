@@ -28,7 +28,9 @@ class Page extends \Eloquent
 
 	public function getUri()
 	{
-		return $this->method.ucfirst($this->name);
+		$uri = $this->method.ucfirst($this->name);
+
+		return $uri;
 	}
 
 	public function getName()

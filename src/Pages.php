@@ -18,7 +18,7 @@ class Pages
         return self::$pages = Page::all();
     }
 
-    public static function setRoutes()
+    public static function  setRoutes()
     {
         /**
          * @var $page Page
@@ -69,18 +69,5 @@ class Pages
         $name = is_object($page) ? $page->name : $page;
 
         return trans('pages.'.$name);
-    }
-
-    public static function getApiPages()
-    {
-        return [
-            'apiContractContent' => ['url' => 'api/contract/content', 'uses' => 'Api\ContractsController@getContract']
-        ];
-    }
-
-    public static function setApiRoutes()
-    {
-        \Route::get('api/contract/content', ['as' => 'apiContractContent', 'uses' =>
-            'Api\ContractsController@getContract']);
     }
 }

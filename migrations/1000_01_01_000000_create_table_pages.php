@@ -17,6 +17,8 @@ class CreateTablePages extends Migration
             $table->string('method');
             $table->string('name');
             $table->string('uses');
+            $table->string('uri_prefix');
+            $table->string('uri_suffix');
             $table->string('custom_uri');
             $table->string('parent');
             $table->boolean('in_menu');
