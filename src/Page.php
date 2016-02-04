@@ -49,7 +49,7 @@ class Page extends \Eloquent
 
 	public static function  setRoutes()
 	{
-		foreach (Page::all() as $page)
+		foreach (self::all() as $page)
 		{
 			switch($page->method)
 			{
@@ -73,15 +73,15 @@ class Page extends \Eloquent
 		/**
 		 * @var $page Page
 		 */
-		foreach (Page::all() as $page)
+		foreach (self::all() as $page)
 		{
 			\Breadcrumbs::register($page->getName(), function($breadcrumbs) use ($page)
 			{
 				$page->parent
 					? $breadcrumbs->parent($page->parent)
-					: ($page->name != 'home' && $breadcrumbs->parent('home'));
+					: ($page->getName() != 'getHome' && $breadcrumbs->parent('getHome'));
 
-				$breadcrumbs->push(trans('pages.'.$page->name), $page->getUri());
+				$breadcrumbs->push($page->getTitle(), $page->getUri());
 			});
 		}
 	}
