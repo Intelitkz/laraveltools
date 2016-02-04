@@ -8,10 +8,6 @@
         "illuminate/support": "~5.0"
     },
     "autoload": {
-        "classmap": [
-            "migrations",
-            "seeds"
-        ],
         "psr-4": {
             "Intelitkz\\Laraveltools\\": "src/"
         }
