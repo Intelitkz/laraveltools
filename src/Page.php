@@ -1,6 +1,7 @@
 <?php namespace Intelitkz\Laraveltools;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 
 /**
  * App\Models\Page
@@ -31,6 +32,9 @@ class Page extends \Eloquent
 		if ($this->custom_uri)
 			return $this->custom_uri;
 
+		if ($this->method == 'any')
+			return $this->name;
+
 		$uri = $this->method.ucfirst($this->name);
 		$uri = $this->uri_prefix.$uri.$this->uri_suffix;
 
@@ -49,6 +53,9 @@ class Page extends \Eloquent
 
 	public static function  setRoutes()
 	{
+		if (!\Schema::hasTable('pages'))
+			return false;
+
 		foreach (self::all() as $page)
 		{
 			switch($page->method)
@@ -64,12 +71,19 @@ class Page extends \Eloquent
 					break;
 				case 'delete':
 					\Route::patch($page->getUri(), ['as' => $page->getName(), 'uses' => $page->uses]);
+					break;
+				case 'any':
+					\Route::any($page->getUri(), ['as' => $page->getName(), 'uses' => $page->uses]);
 			}
 		}
+
 	}
 
 	public static function setBreadcrumbs()
 	{
+		if (!\Schema::hasTable('pages'))
+			return false;
+
 		/**
 		 * @var $page Page
 		 */
@@ -85,6 +99,5 @@ class Page extends \Eloquent
 			});
 		}
 	}
-
 
 }
