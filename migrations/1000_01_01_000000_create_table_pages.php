@@ -20,10 +20,13 @@ class CreateTablePages extends Migration
             $table->string('uri_prefix');
             $table->string('uri_suffix');
             $table->string('custom_uri');
-            $table->string('parent');
+            $table->unsignedInteger('parent_id')->nullable();
             $table->boolean('in_menu');
             $table->softDeletes();
         });
+
+        Schema::table('pages',
+            function (Blueprint $table) {$table->foreign('parent_id')->references('id')->on('pages');});
     }
 
     /**
@@ -33,6 +36,9 @@ class CreateTablePages extends Migration
      */
     public function down()
     {
+        Schema::table('pages',
+            function (Blueprint $table){$table->dropForeign('pages_parent_id_foreign');});
+
         Schema::drop('pages');;
     }
 }

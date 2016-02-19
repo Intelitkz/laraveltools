@@ -1,5 +1,6 @@
 <?php namespace Intelitkz\Laraveltools;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 
@@ -32,10 +33,7 @@ class Page extends \Eloquent
 		if ($this->custom_uri)
 			return $this->custom_uri;
 
-		if ($this->method == 'any')
-			return $this->name;
-
-		$uri = $this->method.ucfirst($this->name);
+		$uri = $this->name;
 		$uri = $this->uri_prefix.$uri.$this->uri_suffix;
 
 		return $uri;
@@ -79,6 +77,22 @@ class Page extends \Eloquent
 
 	}
 
+	/**
+	 * @return HasOne
+	 */
+	public function parent()
+	{
+		return $this->belongsTo('Intelitkz\Laraveltools\Page', 'parent_id');
+	}
+
+	/**
+	 * @return self
+	 */
+	public function children()
+	{
+		return $this->hasMany('Intelitkz\Laraveltools\Page', 'parent_id');
+	}
+
 	public static function setBreadcrumbs()
 	{
 		if (!\Schema::hasTable('pages'))
@@ -91,13 +105,12 @@ class Page extends \Eloquent
 		{
 			\Breadcrumbs::register($page->getName(), function($breadcrumbs) use ($page)
 			{
-				$page->parent
-					? $breadcrumbs->parent($page->parent)
+				($parent = $page->parent()->getResults())
+					? $breadcrumbs->parent($page->parent()->getResults()->getName())
 					: ($page->getName() != 'getHome' && $breadcrumbs->parent('getHome'));
 
 				$breadcrumbs->push($page->getTitle(), $page->getUri());
 			});
 		}
 	}
-
 }
