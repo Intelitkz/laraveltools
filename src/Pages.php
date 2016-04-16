@@ -109,11 +109,16 @@ class Pages
 		{
 			\Breadcrumbs::register($this->getName($page), function($breadcrumbs) use ($page)
 			{
-				($parent = $this->getParent($page))
+				$parent = $this->getParent($page);
+				$hasController = function() use ($page){
+					return (bool) data_get($page, 'uses');
+				};
+
+				($parent)
 					? $breadcrumbs->parent($this->getName($parent))
 					: ($this->getName($page) != 'getHome' && $breadcrumbs->parent('getHome'));
 
-				$breadcrumbs->push($this->getTitle($page), $this->getUri($page));
+				$breadcrumbs->push($this->getTitle($page), $this->getUri($page), ['hasController' => $hasController()]);
 			});
 		}
 	}
