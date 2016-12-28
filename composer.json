@@ -1,7 +1,6 @@
 {
     "name": "intelitkz/laraveltools",
     "description": "Laravel tools by Intelit",
-    "minimum-stability": "dev",
     "require": {
         "php": ">=5.4.0",
         "illuminate/console": "~5.0",
