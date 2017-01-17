@@ -62,6 +62,7 @@ class Page {
 		$instance->restrictedRoles      = $params['restrictedRoles'];
 		$instance->bannedRoles          = $params['bannedRoles'];
 		$instance->allowedRoles         = $params['allowedRoles'];
+		$instance->parentForBreadcrumbs = $params['parentForBreadcrumbs'];
 
 		return $instance;
 	}
