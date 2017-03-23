@@ -9,7 +9,10 @@
     "autoload": {
         "psr-4": {
             "Intelitkz\\Laraveltools\\": "src/"
-        }
+        },
+        "files": [
+            "src/functions.php"
+        ]
     },
     "extra": {
         "branch-alias": {

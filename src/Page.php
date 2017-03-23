@@ -16,35 +16,37 @@ class Page {
 	public $name;
 	public $uses;
 	public $parent;
-	public $parentForBreadcrumbs;
-	public $parentForMenu;
-	public $method; // get 25
-	public $in_menu; // true 30
-	public $custom_uri; // '' 34
-	public $sorting = 50;
+	public $method;
+	public $in_menu;
+	public $custom_uri;
+	public $index = 50;
 	public $restrictedRoles = [];
 	public $bannedRoles = [];
 	public $allowedRoles = [];
+	public $children;
+	public $routeSet = false;
 
 	/**
 	 * Page constructor.
 	 * @param $name
 	 * @param $uses
-	 * @param $parent
 	 * @param $method
 	 * @param $in_menu
 	 * @param $custom_uri
 	 */
-	public function __construct($name, $uses, $parent, $method = 'get', $in_menu = TRUE, $custom_uri = '')
+	public function __construct($name, $uses = null, $method = 'get', $in_menu = TRUE, $custom_uri = '')
 	{
-		$this->name                 = $name;
-		$this->uses                 = $uses;
-		$this->parent               = $parent;
-		$this->parentForBreadcrumbs = $parent;
-		$this->parentForMenu        = $parent;
-		$this->method               = $method;
-		$this->in_menu              = $in_menu;
-		$this->custom_uri           = $custom_uri;
+		$this->name       = $name;
+		$this->uses       = $uses;
+		$this->method     = $method;
+		$this->in_menu    = $in_menu;
+		$this->custom_uri = $custom_uri;
+		$this->children   = collect();
+	}
+
+	public static function new($name, $uses = null, $method = 'get', $in_menu = TRUE, $custom_uri = '')
+	{
+		return new static($name, $uses, $method, $in_menu, $custom_uri);
 	}
 
 	public static function __set_state($params)
@@ -52,37 +54,17 @@ class Page {
 		$instance = new static(
 			$params['name'],
 			$params['uses'],
-			$params['parent'],
 			$params['method'],
 			$params['in_menu'],
 			$params['custom_uri']
 		);
 
-		$instance->sorting              = $params['sorting'];
-		$instance->restrictedRoles      = $params['restrictedRoles'];
-		$instance->bannedRoles          = $params['bannedRoles'];
-		$instance->allowedRoles         = $params['allowedRoles'];
-		$instance->parentForBreadcrumbs = $params['parentForBreadcrumbs'];
+		$instance->index         = $params['index'];
+		$instance->restrictedRoles = $params['restrictedRoles'];
+		$instance->bannedRoles     = $params['bannedRoles'];
+		$instance->allowedRoles    = $params['allowedRoles'];
 
 		return $instance;
-	}
-
-	/**
-	 * @param mixed $parentForBreadcrumbs
-	 */
-	public function setParentForBreadcrumbs($parentForBreadcrumbs)
-	{
-		$this->parentForBreadcrumbs = $parentForBreadcrumbs;
-
-		return $this;
-	}
-
-	/**
-	 * @param mixed $parentForMenu
-	 */
-	public function setParentForMenu($parentForMenu)
-	{
-		$this->parentForMenu = $parentForMenu;
 	}
 
 	public function getTitle($forMenu = FALSE)
@@ -115,11 +97,11 @@ class Page {
 	}
 
 	/**
-	 * @param int $sorting
+	 * @param int $index
 	 */
-	public function setSorting($sorting)
+	public function index($index)
 	{
-		$this->sorting = $sorting;
+		$this->index = $index;
 
 		return $this;
 	}
@@ -141,6 +123,18 @@ class Page {
 	public function allow($role)
 	{
 		$this->allowedRoles = func_get_args();
+
+		return $this;
+	}
+
+	public function children(array $children)
+	{
+		foreach ($children as $child)
+		{
+			$child->parent = $this;
+		}
+
+		$this->children = collect($children)->sortBy('index');
 
 		return $this;
 	}
