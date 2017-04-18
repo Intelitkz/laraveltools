@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log;
 
 
 class PagesManager {
+
 	private static $instance;
 
 	/**
@@ -90,7 +91,7 @@ class PagesManager {
 
 	public function setBreadcrumbs()
 	{
-		foreach ($this->pages as $page)
+		foreach ($this->flatpages() as $page)
 		{
 			\Breadcrumbs::register($page->name, function ($breadcrumbs) use ($page)
 			{
@@ -103,5 +104,11 @@ class PagesManager {
 				$breadcrumbs->push($page->getTitle(), $uri, ['hasController' => (bool) $page->uses]);
 			});
 		}
+	}
+
+	public function currentPage()
+	{
+		$uri = trim(request_uri(), '/');
+		return $this->flatpages()->where('uri', $uri)->first();
 	}
 }

@@ -14,6 +14,7 @@ use App\Helpers\Utils;
 class Page {
 
 	public $name;
+	public $uri;
 	public $uses;
 	public $parent;
 	public $method;
@@ -24,7 +25,7 @@ class Page {
 	public $bannedRoles = [];
 	public $allowedRoles = [];
 	public $children;
-	public $routeSet = false;
+	public $routeSet = FALSE;
 
 	/**
 	 * Page constructor.
@@ -34,9 +35,10 @@ class Page {
 	 * @param $in_menu
 	 * @param $custom_uri
 	 */
-	public function __construct($name, $uses = null, $method = 'get', $in_menu = TRUE, $custom_uri = '')
+	public function __construct($name, $uses = NULL, $method = 'get', $in_menu = TRUE, $custom_uri = '')
 	{
 		$this->name       = $name;
+		$this->uri        = $custom_uri ?: $name;
 		$this->uses       = $uses;
 		$this->method     = $method;
 		$this->in_menu    = $in_menu;
@@ -44,7 +46,7 @@ class Page {
 		$this->children   = collect();
 	}
 
-	public static function new($name, $uses = null, $method = 'get', $in_menu = TRUE, $custom_uri = '')
+	public static function new($name, $uses = NULL, $method = 'get', $in_menu = TRUE, $custom_uri = '')
 	{
 		return new static($name, $uses, $method, $in_menu, $custom_uri);
 	}
@@ -59,7 +61,7 @@ class Page {
 			$params['custom_uri']
 		);
 
-		$instance->index         = $params['index'];
+		$instance->index           = $params['index'];
 		$instance->restrictedRoles = $params['restrictedRoles'];
 		$instance->bannedRoles     = $params['bannedRoles'];
 		$instance->allowedRoles    = $params['allowedRoles'];
@@ -129,9 +131,9 @@ class Page {
 
 	public function children(array $children)
 	{
-		foreach ($children as $child)
+		foreach ($children as $key => $child)
 		{
-			$child->parent = $this;
+			$children[$key]->parent = $this; // todo cancel
 		}
 
 		$this->children = collect($children)->sortBy('index');
